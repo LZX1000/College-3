@@ -1,7 +1,6 @@
 import java.util.Scanner;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 public class Calculator {
     public static boolean isNumeric(String str) {
@@ -15,68 +14,53 @@ public class Calculator {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
-        while (true) {
-            Double number1;
-            Double number2;
-            char operator;
+        boolean running = true;
+        while (running) {
+            Double number1 = 0.0;
+            Double number2 = 0.0;
+            char operator = '+';
 
-            while (true) {
+            boolean recievingInput = true;
+            while (recievingInput) {
                 System.out.println("Enter math need done: ");
                 
                 String input = sc.nextLine();
                 String[] parts = input.split(" ");
 
-                if (input.equalsIgnoreCase("exit")) {
-                    System.out.println("Goodbye!");
-
-                    sc.close();
-                    return;
-                } else if (parts.length == 2 && isNumeric(parts[0]) && isNumeric(parts[1])) {
-                    boolean operatorExists = false;
-
-                    if (isNumeric(parts[parts.length-1])) {
-                        number1 = Double.parseDouble(parts[0]);
-                    } else {
-                        String[] subArray = Arrays.copyOfRange(parts, 0, parts.length - 1);
-                        String joinedString = String.join("", subArray);
-                        number1 = Double.parseDouble(joinedString);
-                        try {
-                            operator = parts[parts.length-1].charAt(0);
-                            operatorExists = true;
-                        } catch (Exception e) {
-                            continue;
+                switch (parts.length) {
+                    case 1: {
+                        if (input.equalsIgnoreCase("exit")) {
+                            System.out.println("Goodbye!");
+        
+                            running = false;
                         }
                     }
-
-                    if (isNumeric(parts[0])) {
-                        number2 = Double.parseDouble(parts[1]);
-                    } else {
-                        String[] subArray = Arrays.copyOfRange(parts, 1, parts.length);
-                        String joinedString = String.join("", subArray);
-                        number2 = Double.parseDouble(joinedString);
-                        try {
-                            operator = parts[0].charAt(0);
-                            operatorExists = true;
-                        } catch (Exception e) {
-                            continue;
+                    case 2: {
+                        if (isNumeric(parts[0]) && isNumeric(parts[1])) {
+                            number1 = Double.parseDouble(parts[0]);
+                            number2 = Double.parseDouble(parts[1]);
+        
+                            System.out.println("Enter the operator: ");
+                            operator = sc.next().charAt(0);
+        
+                            recievingInput = false;
+                            break;
                         }
                     }
-                    
-                    if (!operatorExists) {
-                        System.out.println("Enter the operator: ");
-                        operator = sc.next().charAt(0);
+                    case 3: {
+                        if (parts.length == 3 && isNumeric(parts[0]) && isNumeric(parts[2])) {
+                            number1 = Double.parseDouble(parts[0]);
+                            number2 = Double.parseDouble(parts[2]);
+        
+                            operator = parts[1].charAt(0);
+        
+                            recievingInput = false;
+                            break;
+                        }
                     }
-
-                    break;
-                } else if (parts.length == 3 && isNumeric(parts[0]) && isNumeric(parts[2])) {
-                    number1 = Double.parseDouble(parts[0]);
-                    number2 = Double.parseDouble(parts[2]);
-
-                    operator = parts[1].charAt(0);
-
-                    break;
-                } else {
-                    System.out.println("Invalid input.");
+                    default: {
+                        System.out.println("Invalid input.");
+                    }
                 }
             }
             try {
@@ -94,5 +78,6 @@ public class Calculator {
                 System.out.println("Error: " + e);
             }
         }
+        sc.close();
     }
 }

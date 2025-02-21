@@ -1,18 +1,6 @@
 import java.util.Scanner;
 
 public class NumberGuess {
-    public static void clearScreen() {  
-        System.out.print("\033[H\033[2J");  
-        System.out.flush();  
-    }  
-    public static boolean isNumeric(String str) {
-        try {
-            Double.parseDouble(str);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-            }
-        }
     public static void help() {
         System.out.println("Enter 'settings' to change the max number");
         System.out.println("Enter 'quit' to exit the game");
@@ -25,7 +13,7 @@ public class NumberGuess {
 
         Scanner sc = new Scanner(System.in);
 
-        clearScreen();
+        Extras.clearScreen();
         System.out.println("Welcome to Number Guess!");
         System.out.println("Enter 'help' for a list of commands.");
         System.out.println();
@@ -40,8 +28,9 @@ public class NumberGuess {
             int between_max = max_number;
             int between_min = min_number;
 
-            boolean playing = true;
-            while (playing) {
+            boolean victory = false;
+
+            while (between_max - between_min > 1) {
                 int guess = default_guess;
 
                 try {
@@ -66,22 +55,28 @@ public class NumberGuess {
                                 between_max = guess;
                             }
                         }
-                        clearScreen();
+                        Extras.clearScreen();
                     }
-                    System.out.println("Correct! It took you " + tries + " tries.");
-                    System.out.println("Play again? (y/n)\n");
+                    message = "Correct! It took you " + tries + " tries.";
+                    victory = true;
 
-                    playing = false;
+                    break;
                 } catch (Exception e) {
-                    clearScreen();
+                   Extras.clearScreen();
                     message = "Invalid input";
                     guess = default_guess;
                     sc.next();
                 }
             }
-            
+            if (!victory) {
+                message = "You lose! The number was " + hidden_number + ".";
+            }
+
             boolean choosing = true;
             while (choosing) {
+                Extras.clearScreen();
+                System.out.println(message);
+                System.out.println("Play again? (y/n)\n");
                 System.out.print(">> ");
                 String cmd = sc.next().toLowerCase();
 
@@ -91,7 +86,7 @@ public class NumberGuess {
                         choosing = false;
                         break;
                     } case "y": {
-                        clearScreen();
+                        Extras.clearScreen();
 
                         choosing = false;
                         break;

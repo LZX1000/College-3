@@ -52,6 +52,16 @@ public class TicTacToe {
         return checkRow(row, player, grid_size, board) || checkCollumn(col, player, grid_size, board) || checkDiaganol(player, grid_size, board);
     }
 
+    private static boolean checkStalemate(String[] board) {
+        for (String s : board) {
+            if (s == null) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private static void game(int display_size, JFrame frame) {
         // Must be less than 9
         int grid_size = 3;
@@ -77,8 +87,16 @@ public class TicTacToe {
                         button.setText(board[j]);
 
                         if (checkWin(j, player1[0] ? "X" : "O", grid_size, board)) {
-                            JOptionPane.showMessageDialog(frame, "Player " + (player1[0] ? "1" : "2") + " wins!");
-                            int response = JOptionPane.showConfirmDialog(frame, "Would you like to play again?", "Play Again?", JOptionPane.YES_NO_OPTION);
+                            int response = JOptionPane.showConfirmDialog(frame, "Player " + (player1[0] ? "1" : "2") + " wins!" + "\nWould you like to play again?", "Play Again?", JOptionPane.YES_NO_OPTION);
+
+                            if (response == JOptionPane.YES_OPTION) {
+                                frame.dispose();
+                                main(null);
+                            } else {
+                                frame.dispose();
+                            }
+                        } else if (checkStalemate(board)) {
+                            int response = JOptionPane.showConfirmDialog(frame, "Stalemate!" + "\nWould you like to play again?", "Play Again?", JOptionPane.YES_NO_OPTION);
 
                             if (response == JOptionPane.YES_OPTION) {
                                 frame.dispose();
